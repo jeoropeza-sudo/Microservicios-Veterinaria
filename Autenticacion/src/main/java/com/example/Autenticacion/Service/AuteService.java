@@ -3,13 +3,11 @@ package com.example.Autenticacion.Service;
 import com.example.Autenticacion.Client.UsuarioCliente;
 import com.example.Autenticacion.Config.JwtUtil;
 import com.example.Autenticacion.DTO.*;
-import com.example.Autenticacion.Exception.AuteException;
 import com.example.Autenticacion.Model.AuteUsuario;
 import com.example.Autenticacion.Repository.AuteRepository;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,28 +15,25 @@ import java.util.stream.Collectors;
 @Service
 public class AuteService {
 
-    private final AuteRepository repository;
-    private final BCryptPasswordEncoder encoder;
-    private final JwtUtil jwtUtil;
-    private final UsuarioCliente usuarioCliente;
+    @Autowired
+    private AuteRepository repository;
 
-    public AuteService(AuteRepository repository, BCryptPasswordEncoder encoder,
-                       JwtUtil jwtUtil, UsuarioCliente usuarioCliente) {
-        this.repository = repository;
-        this.encoder = encoder;
-        this.jwtUtil = jwtUtil;
-        this.usuarioCliente = usuarioCliente;
-    }
+    @Autowired
+    private BCryptPasswordEncoder encoder;
 
-    @Transactional
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private UsuarioCliente usuarioCliente;
+
     public AuteUsuario registrar(RegistroRequestDTO dto) {
-        String email = dto.getEmail().trim().toLowerCase();
-        if (repository.existsByEmailIgnoreCase(email)) {
-            throw new AuteException(HttpStatus.CONFLICT, "El correo ya se encuentra registrado.");
+        if (repository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("El correo ya se encuentra registrado");
         }
 
         AuteUsuario usuario = new AuteUsuario();
-        usuario.setEmail(email);
+        usuario.setEmail(dto.getEmail());
         usuario.setPassword(encoder.encode(dto.getPassword()));
         usuario.setRol("CLIENTE");
 
@@ -55,12 +50,11 @@ public class AuteService {
     }
 
     public AuthResponseDTO login(LoginRequestDTO dto) {
-        String email = dto.getEmail().trim().toLowerCase();
-        AuteUsuario usuario = repository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new AuteException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas."));
+        AuteUsuario usuario = repository.findByEmail(dto.getEmail())
+                .orElseThrow(() -> new RuntimeException("Credenciales inválidas"));
 
         if (!encoder.matches(dto.getPassword(), usuario.getPassword())) {
-            throw new AuteException(HttpStatus.UNAUTHORIZED, "Credenciales inválidas.");
+            throw new RuntimeException("Credenciales inválidas");
         }
 
         String token = jwtUtil.generarToken(usuario.getId(), usuario.getEmail(), usuario.getRol());
@@ -82,10 +76,10 @@ public class AuteService {
 
     public void actualizarPassword(String emailAutenticado, ActualizarPasswordDTO dto) {
         AuteUsuario usuario = repository.findByEmail(emailAutenticado)
-                .orElseThrow(() -> new AuteException(HttpStatus.NOT_FOUND, "Usuario no encontrado."));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (!encoder.matches(dto.getPasswordActual(), usuario.getPassword())) {
-            throw new AuteException(HttpStatus.BAD_REQUEST, "La contraseña actual es incorrecta.");
+            throw new RuntimeException("La contraseña actual es incorrecta");
         }
 
         usuario.setPassword(encoder.encode(dto.getPasswordNueva()));
@@ -94,7 +88,7 @@ public class AuteService {
 
     public AuteDTO obtenerDatosToken(String token) {
         if (!jwtUtil.validarToken(token)) {
-            throw new AuteException(HttpStatus.UNAUTHORIZED, "Token inválido o expirado.");
+            throw new RuntimeException("Token inválido o expirado");
         }
         return new AuteDTO(
                 jwtUtil.extraerId(token),
