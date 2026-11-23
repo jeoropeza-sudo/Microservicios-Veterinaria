@@ -35,6 +35,7 @@ public class SeguridadConfig {
                         }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuarios/crear-base").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/usuarios/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/usuarios/**").hasAnyRole("CLIENTE", "ADMIN")
                         .anyRequest().denyAll())

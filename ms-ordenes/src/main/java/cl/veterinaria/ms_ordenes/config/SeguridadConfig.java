@@ -46,6 +46,7 @@ public class SeguridadConfig {
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/ordenes/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/ordenes/**").hasAnyRole("CLIENTE", "ADMIN")
                         .anyRequest().denyAll()
