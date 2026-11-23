@@ -1,0 +1,15 @@
+cl\veterinaria\ms_usuarios\config\UsuarioAutenticado.class
+cl\veterinaria\ms_usuarios\dto\ActualizarPerfilDTO.class
+cl\veterinaria\ms_usuarios\dto\CrearPerfilDTO.class
+cl\veterinaria\ms_usuarios\config\JwtAuthenticationFilter.class
+cl\veterinaria\ms_usuarios\dto\ApiErrorDTO.class
+cl\veterinaria\ms_usuarios\model\PerfilUsuario.class
+cl\veterinaria\ms_usuarios\controller\UsuarioController.class
+cl\veterinaria\ms_usuarios\dto\PerfilUsuarioDTO.class
+cl\veterinaria\ms_usuarios\exception\UsuarioException.class
+cl\veterinaria\ms_usuarios\repository\PerfilUsuarioRepository.class
+cl\veterinaria\ms_usuarios\config\SeguridadConfig.class
+cl\veterinaria\ms_usuarios\MsUsuariosApplication.class
+cl\veterinaria\ms_usuarios\service\PerfilUsuarioService.class
+cl\veterinaria\ms_usuarios\exception\ApiExceptionHandler.class
+cl\veterinaria\ms_usuarios\config\JwtTokenService.class
