@@ -10,7 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 		"spring.datasource.driver-class-name=org.h2.Driver",
 		"spring.jpa.hibernate.ddl-auto=create-drop",
 		"jwt.secret=test-secret-for-authentication-tests-123456789",
-		"ms.usuarios.url=http://localhost:8085/api/usuarios"
+		"ms.usuarios.url=http://localhost:8087/api/usuarios"
 })
 class AutenticacionApplicationTests {
 
