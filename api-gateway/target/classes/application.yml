@@ -1,0 +1,111 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins:
+                  - "http://localhost:5173"
+                  - "http://localhost:3000"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - PATCH
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders:
+                  - "*"
+          routes:
+            - id: swagger-auth
+              uri: lb://ms-auth
+              predicates:
+                - Path=/swagger/auth/**
+              filters:
+                - RewritePath=/swagger/auth/?(?<segment>.*), /${segment}
+            - id: swagger-usuarios
+              uri: lb://ms-usuarios
+              predicates:
+                - Path=/swagger/usuarios/**
+              filters:
+                - RewritePath=/swagger/usuarios/?(?<segment>.*), /${segment}
+            - id: swagger-productos
+              uri: lb://ms-productos
+              predicates:
+                - Path=/swagger/productos/**
+              filters:
+                - RewritePath=/swagger/productos/?(?<segment>.*), /${segment}
+            - id: swagger-servicios
+              uri: lb://ms-servicios
+              predicates:
+                - Path=/swagger/servicios/**
+              filters:
+                - RewritePath=/swagger/servicios/?(?<segment>.*), /${segment}
+            - id: swagger-ordenes
+              uri: lb://ms-ordenes
+              predicates:
+                - Path=/swagger/ordenes/**
+              filters:
+                - RewritePath=/swagger/ordenes/?(?<segment>.*), /${segment}
+            - id: swagger-consulta
+              uri: lb://ms-consulta
+              predicates:
+                - Path=/swagger/consultas/**
+              filters:
+                - RewritePath=/swagger/consultas/?(?<segment>.*), /${segment}
+            - id: swagger-reservas
+              uri: lb://ms-reserva
+              predicates:
+                - Path=/swagger/reservas/**
+              filters:
+                - RewritePath=/swagger/reservas/?(?<segment>.*), /${segment}
+            - id: auth
+              uri: lb://ms-auth
+              predicates:
+                - Path=/api/aute/**
+            - id: usuarios
+              uri: lb://ms-usuarios
+              predicates:
+                - Path=/api/usuarios/**
+            - id: productos
+              uri: lb://ms-productos
+              predicates:
+                - Path=/api/productos/**
+            - id: servicios
+              uri: lb://ms-servicios
+              predicates:
+                - Path=/api/servicios/**
+            - id: ordenes
+              uri: lb://ms-ordenes
+              predicates:
+                - Path=/api/ordenes/**
+            - id: consultas
+              uri: lb://ms-consulta
+              predicates:
+                - Path=/api/consultas/**
+            - id: reservas
+              uri: lb://ms-reserva
+              predicates:
+                - Path=/api/reservas/**
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: false
+    hostname: ${EUREKA_INSTANCE_HOSTNAME:localhost}
+    instance-id: ${spring.application.name}:${server.port}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG

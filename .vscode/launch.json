@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ApiGatewayApplication",
+            "request": "launch",
+            "mainClass": "cl.veterinaria.gateway.ApiGatewayApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-EurekaServerApplication<eureka-server>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -32,6 +39,46 @@
         },
         {
             "type": "java",
+            "name": "Spring Boot-MsProductosApplication<ms-productos>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.veterinaria.ms_productos.MsProductosApplication",
+            "projectName": "ms-productos",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MsServiciosApplication<ms-servicios>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.veterinaria.ms_servicios.MsServiciosApplication",
+            "projectName": "ms-servicios",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BackendApplication<ms-consulta>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.veterinaria.backend.BackendApplication",
+            "projectName": "ms-consulta",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MsOrdenesApplication<ms-ordenes>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "cl.veterinaria.ms_ordenes.MsOrdenesApplication",
+            "projectName": "ms-ordenes",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-MsReservaApplication<ms-reserva>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
@@ -49,6 +96,23 @@
             "projectName": "Autenticacion",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Veterinaria: todos los microservicios",
+            "configurations": [
+                "Spring Boot-EurekaServerApplication<eureka-server>",
+                "Spring Boot-ApiGatewayApplication<api-gateway>",
+                "Spring Boot-MsUsuariosApplication<ms-usuarios>",
+                "Spring Boot-MsProductosApplication<ms-productos>",
+                "Spring Boot-MsServiciosApplication<ms-servicios>",
+                "Spring Boot-BackendApplication<ms-consulta>",
+                "Spring Boot-MsOrdenesApplication<ms-ordenes>",
+                "Spring Boot-MsReservaApplication<ms-reserva>",
+                "Spring Boot-AutenticacionApplication<Autenticacion>"
+            ],
+            "stopAll": true
         }
     ]
 }
