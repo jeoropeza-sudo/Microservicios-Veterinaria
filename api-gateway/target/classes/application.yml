@@ -8,6 +8,8 @@ spring:
     gateway:
       server:
         webflux:
+          default-filters:
+            - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
           globalcors:
             cors-configurations:
               '[/**]':
@@ -70,8 +72,6 @@ spring:
               uri: lb://ms-auth
               predicates:
                 - Path=/api/aute/**
-              filters:
-                - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
             - id: usuarios
               uri: lb://ms-usuarios
               predicates:

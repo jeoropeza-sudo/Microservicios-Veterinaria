@@ -21,29 +21,44 @@ public class AutenticacionApplication {
 
 	@Bean
 	@Transactional
-	ApplicationRunner inicializarAdministrador(AuteRepository repository,
-											  BCryptPasswordEncoder passwordEncoder,
-											  UsuarioCliente usuarioCliente,
-											  @Value("${app.admin.email:admin@veterinaria.cl}") String email,
-											  @Value("${app.admin.password:Admin123}") String password) {
+	ApplicationRunner inicializarUsuarios(AuteRepository repository,
+										  BCryptPasswordEncoder passwordEncoder,
+										  UsuarioCliente usuarioCliente,
+										  @Value("${app.admin.email:admin@veterinaria.cl}") String adminEmail,
+										  @Value("${app.admin.password:Admin123}") String adminPassword,
+										  @Value("${app.cliente1.email:usuario1@veterinaria.cl}") String cliente1Email,
+										  @Value("${app.cliente1.password:Clave123}") String cliente1Password,
+										  @Value("${app.cliente2.email:usuario2@veterinaria.cl}") String cliente2Email,
+										  @Value("${app.cliente2.password:Clave123}") String cliente2Password) {
 		return args -> {
-			String normalizedEmail = email.trim().toLowerCase();
-			if (repository.existsByEmailIgnoreCase(normalizedEmail)) {
-				return;
-			}
-
-			AuteUsuario administrador = new AuteUsuario();
-			administrador.setEmail(normalizedEmail);
-			administrador.setPassword(passwordEncoder.encode(password));
-			administrador.setRol("ADMIN");
-			AuteUsuario guardado = repository.save(administrador);
-
-			usuarioCliente.crearPerfilEnUsuarios(new UsuarioPerfilRequestDTO(
-					guardado.getId(),
-					guardado.getEmail(),
-					guardado.getRol()
-			));
+			crearUsuario(repository, passwordEncoder, usuarioCliente, adminEmail, adminPassword, "ADMIN");
+			crearUsuario(repository, passwordEncoder, usuarioCliente, cliente1Email, cliente1Password, "CLIENTE");
+			crearUsuario(repository, passwordEncoder, usuarioCliente, cliente2Email, cliente2Password, "CLIENTE");
 		};
+	}
+
+	private void crearUsuario(AuteRepository repository,
+							  BCryptPasswordEncoder passwordEncoder,
+							  UsuarioCliente usuarioCliente,
+							  String email,
+							  String password,
+							  String rol) {
+		String normalizedEmail = email.trim().toLowerCase();
+		if (repository.existsByEmailIgnoreCase(normalizedEmail)) {
+			return;
+		}
+
+		AuteUsuario usuario = new AuteUsuario();
+		usuario.setEmail(normalizedEmail);
+		usuario.setPassword(passwordEncoder.encode(password));
+		usuario.setRol(rol);
+		AuteUsuario guardado = repository.save(usuario);
+
+		usuarioCliente.crearPerfilEnUsuarios(new UsuarioPerfilRequestDTO(
+				guardado.getId(),
+				guardado.getEmail(),
+				guardado.getRol()
+		));
 	}
 
 }
