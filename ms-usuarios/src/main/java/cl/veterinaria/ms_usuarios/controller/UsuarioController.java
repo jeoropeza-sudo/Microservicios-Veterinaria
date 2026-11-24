@@ -10,7 +10,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,5 +62,23 @@ public class UsuarioController {
     public List<PerfilUsuarioDTO> listarTodos(
             @AuthenticationPrincipal UsuarioAutenticado usuario) {
         return service.listarTodos();
+    }
+
+    @PutMapping("/admin/{idAuth}")
+    public PerfilUsuarioDTO actualizarPerfilAdmin(
+            @PathVariable Integer idAuth,
+            @Valid @RequestBody ActualizarPerfilDTO request) {
+        return service.actualizarPerfilAdmin(idAuth, request);
+    }
+
+    @DeleteMapping("/interno/{idAuth}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminarPerfilInterno(
+            @PathVariable Integer idAuth,
+            @RequestHeader(value = "X-Usuarios-Token", required = false) String token) {
+        if (token == null || !token.equals(internalSecret)) {
+            throw new UsuarioException(HttpStatus.FORBIDDEN, "No tienes permisos para eliminar perfiles.");
+        }
+        service.eliminarPerfilInterno(idAuth);
     }
 }

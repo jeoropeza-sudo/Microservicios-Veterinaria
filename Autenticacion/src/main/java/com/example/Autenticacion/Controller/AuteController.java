@@ -43,6 +43,17 @@ public class AuteController {
         return ResponseEntity.ok(service.listarTodos());
     }
 
+    @PostMapping("/admin/usuarios")
+    public ResponseEntity<AuteDTO> crearUsuarioAdmin(@Valid @RequestBody CrearUsuarioAdminDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.crearUsuarioAdmin(dto));
+    }
+
+    @DeleteMapping("/admin/usuarios/{id}")
+    public ResponseEntity<Void> eliminarUsuarioAdmin(@PathVariable Integer id, Authentication authentication) {
+        service.eliminarUsuarioAdmin(id, authentication.getName());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/actualizar-password")
     public ResponseEntity<?> actualizarPassword(@Valid @RequestBody ActualizarPasswordDTO dto,
                                                 Authentication authentication) {

@@ -27,10 +27,13 @@ public class OrdenService {
 
     private final OrdenRepository repository;
     private final ProductoCliente productoCliente;
+    private final ComprobantePruebaService comprobanteService;
 
-    public OrdenService(OrdenRepository repository, ProductoCliente productoCliente) {
+    public OrdenService(OrdenRepository repository, ProductoCliente productoCliente,
+                        ComprobantePruebaService comprobanteService) {
         this.repository = repository;
         this.productoCliente = productoCliente;
+        this.comprobanteService = comprobanteService;
     }
 
     @Transactional
@@ -67,7 +70,9 @@ public class OrdenService {
                 total,
                 items
         );
-        return convertir(repository.save(orden));
+        Orden guardada = repository.save(orden);
+        comprobanteService.crearParaOrden(guardada);
+        return convertir(guardada);
     }
 
     @Transactional(readOnly = true)
@@ -129,7 +134,8 @@ public class OrdenService {
                 orden.getFechaCreacion(),
                 orden.getEstado().name(),
                 orden.getTotal(),
-                items
+                items,
+                comprobanteService.obtenerParaOrden(orden.getId())
         );
     }
 

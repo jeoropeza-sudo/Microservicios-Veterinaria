@@ -37,7 +37,7 @@ public class SeguridadConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/aute/registrar", "/api/aute/login",
                         "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/api/aute/listar").hasRole("ADMIN")
+                .requestMatchers("/api/aute/listar", "/api/aute/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFiltro, UsernamePasswordAuthenticationFilter.class);

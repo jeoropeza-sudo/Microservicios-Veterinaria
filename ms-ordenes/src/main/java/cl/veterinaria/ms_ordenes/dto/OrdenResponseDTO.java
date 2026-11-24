@@ -11,6 +11,7 @@ public record OrdenResponseDTO(
         LocalDateTime fechaCreacion,
         String estado,
         BigDecimal total,
-        List<DetalleOrdenResponseDTO> items
+        List<DetalleOrdenResponseDTO> items,
+        ComprobantePruebaDTO comprobante
 ) {
 }

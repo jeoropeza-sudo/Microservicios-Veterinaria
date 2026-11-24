@@ -25,9 +25,19 @@ public class PerfilUsuarioService {
     public PerfilUsuarioDTO crearBase(CrearPerfilDTO request) {
         return repository.findByIdAuth(request.idAuth())
                 .map(this::convertir)
-                .orElseGet(() -> convertir(repository.save(
-                        new PerfilUsuario(request.idAuth(), request.email(), request.rol())
-                )));
+                .orElseGet(() -> {
+                    PerfilUsuario perfil = new PerfilUsuario(request.idAuth(), request.email(), request.rol());
+                    perfil.actualizarDatos(
+                            request.run(),
+                            request.nombre(),
+                            request.apellidos(),
+                            request.fechaNacimiento(),
+                            request.region(),
+                            request.comuna(),
+                            request.direccion()
+                    );
+                    return convertir(repository.save(perfil));
+                });
     }
 
     @Transactional(readOnly = true)
@@ -61,6 +71,35 @@ public class PerfilUsuarioService {
     @Transactional(readOnly = true)
     public List<PerfilUsuarioDTO> listarTodos() {
         return repository.findAll().stream().map(this::convertir).toList();
+    }
+
+    @Transactional
+    public PerfilUsuarioDTO actualizarPerfilAdmin(Integer idAuth, ActualizarPerfilDTO request) {
+        PerfilUsuario perfil = repository.findByIdAuth(idAuth)
+                .orElseThrow(() -> new UsuarioException(
+                        HttpStatus.NOT_FOUND,
+                        "No se encontró el perfil de usuario."
+                ));
+        perfil.actualizarDatos(
+                request.run(),
+                request.nombre(),
+                request.apellidos(),
+                request.fechaNacimiento(),
+                request.region(),
+                request.comuna(),
+                request.direccion()
+        );
+        return convertir(repository.save(perfil));
+    }
+
+    @Transactional
+    public void eliminarPerfilInterno(Integer idAuth) {
+        PerfilUsuario perfil = repository.findByIdAuth(idAuth)
+                .orElseThrow(() -> new UsuarioException(
+                        HttpStatus.NOT_FOUND,
+                        "No se encontró el perfil de usuario."
+                ));
+        repository.delete(perfil);
     }
 
     private PerfilUsuarioDTO convertir(PerfilUsuario perfil) {

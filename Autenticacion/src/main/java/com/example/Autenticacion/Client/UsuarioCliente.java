@@ -40,4 +40,19 @@ public class UsuarioCliente {
             );
         }
     }
+
+    public void eliminarPerfilEnUsuarios(Integer idAuth) {
+        try {
+            String url = usuariosUrl + "/interno/" + idAuth;
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("X-Usuarios-Token", internalSecret);
+            restTemplate.exchange(url, org.springframework.http.HttpMethod.DELETE,
+                    new HttpEntity<>(null, headers), Void.class);
+        } catch (RestClientException e) {
+            throw new AuteException(
+                    HttpStatus.SERVICE_UNAVAILABLE,
+                    "No fue posible eliminar el perfil del usuario. Inténtalo nuevamente más tarde."
+            );
+        }
+    }
 }

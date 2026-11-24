@@ -35,6 +35,7 @@ public class SeguridadConfig {
                         }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/usuarios/crear-base").permitAll()
+                        .requestMatchers("/api/usuarios/interno/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/usuarios/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/usuarios/**").hasAnyRole("CLIENTE", "ADMIN")
@@ -47,7 +48,7 @@ public class SeguridadConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Usuarios-Token"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

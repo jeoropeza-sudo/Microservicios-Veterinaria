@@ -38,6 +38,9 @@ class OrdenServiceTest {
     @Mock
     private ProductoCliente productoCliente;
 
+    @Mock
+    private ComprobantePruebaService comprobanteService;
+
     @InjectMocks
     private OrdenService service;
 
